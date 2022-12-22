@@ -10,7 +10,7 @@ public class SmallParcelStrategy implements CostStrategy {
 
 	@Override
 	public Double calculateCost() {
-		return this.volume * 0.05;
+		return this.volume * 0.03;
 	}
 
 }

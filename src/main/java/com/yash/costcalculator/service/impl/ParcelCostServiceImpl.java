@@ -1,13 +1,14 @@
 package com.yash.costcalculator.service.impl;
 
 
-import java.util.Date;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.yash.costcalculator.exception.InsufficientValuesProvidedException;
 import com.yash.costcalculator.model.ApiResponse;
 import com.yash.costcalculator.model.Parcel;
 import com.yash.costcalculator.model.VoucherItem;
@@ -15,7 +16,6 @@ import com.yash.costcalculator.service.CouponService;
 import com.yash.costcalculator.service.ParcelCostService;
 import com.yash.costcalculator.service.strategy.CostStrategy;
 import com.yash.costcalculator.service.strategy.CostStrategyConditionFactory;
-import com.yash.costcalculator.util.AppConstants;
 
 
 @Service
@@ -28,18 +28,18 @@ public class ParcelCostServiceImpl implements ParcelCostService{
 	CouponService couponService;
 	
 	@Override
-	public ApiResponse calculateCost(Parcel parcel) throws InsufficientValuesProvidedException {
+	public ApiResponse calculateCost(Parcel parcel) {
 		VoucherItem voucherItem = null;
 		Double calculatedCost = null;
 		String voucherCode = null;
 		Double discountedCost = null;
-		Date currDate = new Date();
+		
+		Map<String, Object> payload = new HashMap<>();
+		
 		Double weight = parcel.getWeight();
 		Double height = parcel.getHeight();
-		Double width = parcel.getWeight();
+		Double width = parcel.getWidth();
 		Double length = parcel.getLength();
-		if(weight == null || height == null || width == null || length == null) 
-			throw new InsufficientValuesProvidedException(AppConstants.BAD_REQUEST_MSG);
 		Double volume = height * width * length;
 		conditionFactory = new CostStrategyConditionFactory(weight, volume);
 		
@@ -60,13 +60,15 @@ public class ParcelCostServiceImpl implements ParcelCostService{
 			discountedCost = calculatedCost - calculatedCost * (double) voucherItem.getDiscount() / 100;
 			Double discounted = Double.valueOf(discountedCost);
 			apiRes.setStatusCode(HttpStatus.OK.value());
-			apiRes.setPayload(discounted);
+			payload.put("parcel cost", discounted);
+			apiRes.setPayload(payload);
 			return apiRes;
 		}
 		
 		Double calculated = Double.valueOf(calculatedCost);
 		apiRes.setStatusCode(HttpStatus.OK.value());
-		apiRes.setPayload(calculated);
+		payload.put("parcel cost", calculated);
+		apiRes.setPayload(payload);
 		return apiRes;
 	}
 

@@ -1,13 +1,20 @@
 package com.yash.costcalculator.exception;
 
-public class InsufficientValuesProvidedException extends Exception {
+import org.springframework.validation.BindingResult;
+
+import lombok.Getter;
+
+@Getter
+public class InsufficientValuesProvidedException extends RuntimeException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	final BindingResult result;
 
-	public InsufficientValuesProvidedException(String s) {
-		super(s);
+	
+	public InsufficientValuesProvidedException(BindingResult result) {
+		this.result = result;
 	}
 }

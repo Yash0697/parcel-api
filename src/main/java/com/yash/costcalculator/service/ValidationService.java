@@ -5,8 +5,9 @@ import org.springframework.stereotype.Service;
 import com.yash.costcalculator.model.ApiResponse;
 import com.yash.costcalculator.model.Parcel;
 
-@Service
-public interface ParcelCostService  {
 
-	ApiResponse calculateCost(Parcel parcel);
+@Service
+public interface ValidationService {
+
+	public ApiResponse validateRequest(Parcel parcel);
 }
