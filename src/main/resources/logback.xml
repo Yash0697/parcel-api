@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    	<layout class="ch.qos.logback.classic.PatternLayout">
+    		<Pattern>%d{yyyy-MM-dd'T'HH:mm:ss.sssz} %p %c{1}:%L  %msg%n</Pattern>
+    	</layout>
+    </appender>
+
+        <appender name="appLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>C:/app_data/appLogs/parcel-api.log</file>
+			<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss.sssz} %p %c{1}:%L  %msg%n</Pattern>
+            </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>C:/app_data/appLogs/parcel-api..%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxHistory>60</maxHistory>
+                <totalSizeCap>50MB</totalSizeCap>
+                <cleanHistoryOnStart>true</cleanHistoryOnStart>
+                <timeBasedFileNamingAndTriggeringPolicy
+                		class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1000KB</maxFileSize>
+                			
+                </timeBasedFileNamingAndTriggeringPolicy>
+                
+            </rollingPolicy>
+
+        </appender>
+        
+
+        <logger name="com.yash" level="INFO" additivity="false">
+            <appender-ref ref="appLog"/>
+        </logger>
+        <root level="DEBUG">
+            <appender-ref ref="appLog"/>
+            <appender-ref ref="STDOUT"/>
+        </root>
+</configuration>
