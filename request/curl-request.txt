@@ -1,0 +1,9 @@
+curl --location --request POST 'http://localhost:8090/parcel/calculate-cost' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "weight": 38.0,
+    "height": 21.0,
+    "width": 14.0,
+    "length": 39.0,
+    "voucherCode": "GFI"
+}'
