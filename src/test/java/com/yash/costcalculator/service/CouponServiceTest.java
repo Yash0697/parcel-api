@@ -15,6 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.yash.costcalculator.model.VoucherItem;
+import com.yash.costcalculator.service.impl.CouponServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class CouponServiceTest {
@@ -23,7 +24,7 @@ public class CouponServiceTest {
 	private RestTemplate restTemplate;
 	
 	@InjectMocks
-	CouponService couponService;
+	CouponService couponService = new CouponServiceImpl();
 	
 	@Mock
 	ResponseEntity<VoucherItem> voucherItem;
