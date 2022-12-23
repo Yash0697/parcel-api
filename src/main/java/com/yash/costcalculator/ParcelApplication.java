@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
-@EntityScan("com.yash.costcalculator.model")
 //@OpenAPIDefinition(info = @Info(
 //		title="Parcel Cost API",
 //		version = "1.0",

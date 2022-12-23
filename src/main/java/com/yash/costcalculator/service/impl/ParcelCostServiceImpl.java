@@ -2,7 +2,9 @@ package com.yash.costcalculator.service.impl;
 
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.yash.costcalculator.model.ApiResponse;
 import com.yash.costcalculator.model.Parcel;
+import com.yash.costcalculator.model.StrategyDecisionParams;
 import com.yash.costcalculator.model.VoucherItem;
+import com.yash.costcalculator.repository.StrategyDecisionParamsRepository;
 import com.yash.costcalculator.service.CouponService;
 import com.yash.costcalculator.service.ParcelCostService;
 import com.yash.costcalculator.service.strategy.CostStrategy;
@@ -23,6 +27,9 @@ public class ParcelCostServiceImpl implements ParcelCostService{
 
 	
 	private CostStrategyConditionFactory conditionFactory;
+	
+	@Autowired
+	StrategyDecisionParamsRepository strategyRepo;
 	
 	@Autowired
 	CouponService couponService;
@@ -41,7 +48,12 @@ public class ParcelCostServiceImpl implements ParcelCostService{
 		Double width = parcel.getWidth();
 		Double length = parcel.getLength();
 		Double volume = height * width * length;
-		conditionFactory = new CostStrategyConditionFactory(weight, volume);
+		
+		Iterable<StrategyDecisionParams> strategiesIterable = strategyRepo.findAll();
+		
+		List<StrategyDecisionParams> strategies = new ArrayList<>();
+		strategiesIterable.forEach(strategies::add);
+		conditionFactory = new CostStrategyConditionFactory(strategies);
 		
 		CostStrategy costStrategy = conditionFactory.getStrategy(weight, volume);
 		

@@ -3,26 +3,23 @@ package com.yash.costcalculator.service.strategy;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.yash.costcalculator.model.StrategyDecisionParams;
-import com.yash.costcalculator.repository.StrategyDecisionParamsRepository;
 
-@Component
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CostStrategyConditionFactory {
 	
-	@Autowired
-	StrategyDecisionParamsRepository strategyRepo;
 	
 	
-//	private LinkedHashMap<Double, CostStrategy> weightFactory = new LinkedHashMap<>();
-//	private LinkedHashMap<Double, CostStrategy> volumeFactory = new LinkedHashMap<>();
 	private LinkedHashMap<Pair, CostStrategy> factory = new LinkedHashMap<>();
+	private List<StrategyDecisionParams> strategies;
 	
-	public CostStrategyConditionFactory() {}
-	public CostStrategyConditionFactory(double weight, double volume) {
-		List<StrategyDecisionParams> strategies = (List<StrategyDecisionParams>) strategyRepo.findAll();
+	public CostStrategyConditionFactory(List<StrategyDecisionParams> strategies) {
+		this.strategies = strategies;
 		for(StrategyDecisionParams strategyDecisionParams: strategies) {
 			String strategyName = strategyDecisionParams.getStrategy();
 			double volumeFromStrategy = strategyDecisionParams.getVolume();
@@ -32,9 +29,6 @@ public class CostStrategyConditionFactory {
 			
 		}
 		
-//		factory.put(new Pair(10.0, Double.MIN_VALUE), new HeavyParcelStrategy(weight));
-//		factory.put(new Pair(Double.MAX_VALUE,1500.0), new SmallParcelStrategy(volume));
-//		factory.put(new Pair(Double.MAX_VALUE, 2500.0), new MediumParcelStrategy(volume));
 	}
 	
 	
