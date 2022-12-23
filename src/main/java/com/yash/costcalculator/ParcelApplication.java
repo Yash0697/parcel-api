@@ -7,11 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
-//@OpenAPIDefinition(info = @Info(
-//		title="Parcel Cost API",
-//		version = "1.0",
-//		description = "Api to calculate parcel delivery cost and apply coupon"
-//		))
 public class ParcelApplication {
 	private static final Logger logger = LoggerFactory.getLogger(ParcelApplication.class);
 	public static void main(String[] args) {

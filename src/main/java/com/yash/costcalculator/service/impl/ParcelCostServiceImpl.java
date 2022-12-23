@@ -1,8 +1,12 @@
 package com.yash.costcalculator.service.impl;
 
-
+import static com.yash.costcalculator.util.AppConstants.COUPON_API_FAILED;
+import static com.yash.costcalculator.util.AppConstants.INVALID_COUPON;
+import static com.yash.costcalculator.util.AppConstants.PARCEL_COST;
+import static com.yash.costcalculator.util.AppConstants.COUPON_EXPIRED;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,65 +25,71 @@ import com.yash.costcalculator.service.ParcelCostService;
 import com.yash.costcalculator.service.strategy.CostStrategy;
 import com.yash.costcalculator.service.strategy.CostStrategyConditionFactory;
 
-
 @Service
-public class ParcelCostServiceImpl implements ParcelCostService{
+public class ParcelCostServiceImpl implements ParcelCostService {
 
-	
 	private CostStrategyConditionFactory conditionFactory;
-	
+
 	@Autowired
 	StrategyDecisionParamsRepository strategyRepo;
-	
+
 	@Autowired
 	CouponService couponService;
-	
+
 	@Override
 	public ApiResponse calculateCost(Parcel parcel) {
 		VoucherItem voucherItem = null;
 		Double calculatedCost = null;
 		String voucherCode = null;
 		Double discountedCost = null;
-		
+
 		Map<String, Object> payload = new HashMap<>();
-		
+
 		Double weight = parcel.getWeight();
 		Double height = parcel.getHeight();
 		Double width = parcel.getWidth();
 		Double length = parcel.getLength();
 		Double volume = height * width * length;
-		
+		Date currDate = new Date();
 		Iterable<StrategyDecisionParams> strategiesIterable = strategyRepo.findAll();
-		
+
 		List<StrategyDecisionParams> strategies = new ArrayList<>();
 		strategiesIterable.forEach(strategies::add);
 		conditionFactory = new CostStrategyConditionFactory(strategies, weight, volume);
-		
+
 		CostStrategy costStrategy = conditionFactory.getStrategy(weight, volume);
-		
+
 		calculatedCost = costStrategy.calculateCost();
-		
+
 		voucherCode = parcel.getVoucherCode();
-		
+
 		voucherItem = couponService.getDiscount(voucherCode);
-		
+
 		ApiResponse apiRes = new ApiResponse();
 		apiRes.setError(false);
-		
-		if(voucherItem != null && voucherItem.getDiscount() > 0 
-//				&& voucherItem.getExpiry().after(currDate)
-				) {
-			discountedCost = calculatedCost - calculatedCost * (double) voucherItem.getDiscount() / 100;
-			Double discounted = Double.valueOf(discountedCost);
-			apiRes.setStatusCode(HttpStatus.OK.value());
-			payload.put("parcel cost", discounted);
-			apiRes.setPayload(payload);
+		apiRes.setResponseDate(currDate);
+		apiRes.setStatusCode(HttpStatus.OK.value());
+
+		if (voucherItem == null) {
+			apiRes.setError(true);
+			apiRes.setStatusCode(HttpStatus.BAD_REQUEST.value());
+			apiRes.setMessage(COUPON_API_FAILED);
 			return apiRes;
 		}
-		
-		Double calculated = Double.valueOf(calculatedCost);
-		apiRes.setStatusCode(HttpStatus.OK.value());
-		payload.put("parcel cost", calculated);
+
+		if (voucherItem != null && voucherItem.getDiscount() == 0.0f) {
+			apiRes.setMessage(INVALID_COUPON);
+			return apiRes;
+		}
+
+		else if (voucherItem != null && voucherItem.getDiscount() > 0 && voucherItem.getExpiry().before(currDate)) {
+			apiRes.setMessage(COUPON_EXPIRED);
+			return apiRes;
+		}
+
+		discountedCost = calculatedCost - calculatedCost * (double) voucherItem.getDiscount() / 100;
+		Double discounted = Double.valueOf(discountedCost);
+		payload.put(PARCEL_COST, discounted);
 		apiRes.setPayload(payload);
 		return apiRes;
 	}

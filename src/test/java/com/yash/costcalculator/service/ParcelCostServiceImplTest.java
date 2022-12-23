@@ -1,9 +1,18 @@
 package com.yash.costcalculator.service;
 
+
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import static com.yash.costcalculator.util.AppConstants.PARCEL_COST;
+import static com.yash.costcalculator.util.AppConstants.COUPON_EXPIRED;
+import static com.yash.costcalculator.util.AppConstants.INVALID_COUPON;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +53,7 @@ public class ParcelCostServiceImplTest {
 	
 	VoucherItem voucherResponse;
 
+	@SuppressWarnings("deprecation")
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -63,10 +73,11 @@ public class ParcelCostServiceImplTest {
 		apiRes = new ApiResponse();
 		apiRes.setStatusCode(HttpStatus.OK.value());
 		Map<String, Object> payload = new HashMap<>();
-		payload.put("parcel cost", 425.5);
+		payload.put(PARCEL_COST, 704.85);
 		apiRes.setPayload(payload);
 		voucherResponse = new VoucherItem();
 		voucherResponse.setDiscount(7.5f);
+		voucherResponse.setExpiry(new Date(2023, 02, 02));
 	}
 
 	@Test
@@ -75,8 +86,30 @@ public class ParcelCostServiceImplTest {
 		when(couponService.getDiscount(Mockito.anyString()))
 		.thenReturn(voucherResponse).thenReturn(null);
 		ApiResponse calculateCost = parcelCostService.calculateCost(parcel);
-		assertEquals(apiRes.getPayload().get("parcel cost"), calculateCost.getPayload().get("parcel cost"));
+		assertEquals(apiRes.getPayload().get(PARCEL_COST), calculateCost.getPayload().get(PARCEL_COST));
 		calculateCost = parcelCostService.calculateCost(parcel);
-		assertEquals(460.0, calculateCost.getPayload().get("parcel cost"));
+		//error in coupon service
+		assertNull(calculateCost.getPayload());
+	}
+	
+	@Test
+	public void testCalculateCost_CouponExpired() {
+		LocalDate localDate = LocalDate.of(2020, 01, 01);
+		voucherResponse.setExpiry(Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+		when(strategyRepo.findAll()).thenReturn(strategies);
+		when(couponService.getDiscount(Mockito.anyString()))
+		.thenReturn(voucherResponse);
+		ApiResponse calculatedCost = parcelCostService.calculateCost(parcel);
+		assertTrue(COUPON_EXPIRED.equals(calculatedCost.getMessage()));
+	}
+	
+	@Test
+	public void testCalculateCost_InvalidCoupon() {
+		voucherResponse.setDiscount(0.0f);
+		when(strategyRepo.findAll()).thenReturn(strategies);
+		when(couponService.getDiscount(Mockito.anyString()))
+		.thenReturn(voucherResponse);
+		ApiResponse calculatedCost = parcelCostService.calculateCost(parcel);
+		assertTrue(INVALID_COUPON.equals(calculatedCost.getMessage()));
 	}
 }
