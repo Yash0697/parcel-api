@@ -16,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "STRATEGY_PARAMS")
 @NoArgsConstructor
 @Data
+@AllArgsConstructor
 public class StrategyDecisionParams implements Serializable {
 
 	/**

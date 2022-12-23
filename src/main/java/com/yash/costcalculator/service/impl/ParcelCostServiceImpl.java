@@ -53,7 +53,7 @@ public class ParcelCostServiceImpl implements ParcelCostService{
 		
 		List<StrategyDecisionParams> strategies = new ArrayList<>();
 		strategiesIterable.forEach(strategies::add);
-		conditionFactory = new CostStrategyConditionFactory(strategies);
+		conditionFactory = new CostStrategyConditionFactory(strategies, weight, volume);
 		
 		CostStrategy costStrategy = conditionFactory.getStrategy(weight, volume);
 		

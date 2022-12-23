@@ -18,20 +18,23 @@ public class CostStrategyConditionFactory {
 	private LinkedHashMap<Pair, CostStrategy> factory = new LinkedHashMap<>();
 	private List<StrategyDecisionParams> strategies;
 	
-	public CostStrategyConditionFactory(List<StrategyDecisionParams> strategies) {
+	public CostStrategyConditionFactory(List<StrategyDecisionParams> strategies, double weight, double volume) {
 		this.strategies = strategies;
 		for(StrategyDecisionParams strategyDecisionParams: strategies) {
 			String strategyName = strategyDecisionParams.getStrategy();
 			double volumeFromStrategy = strategyDecisionParams.getVolume();
 			double weightFromStrategy = strategyDecisionParams.getWeight();
-			CostStrategy strategy = findStarategyFromName(strategyName, weightFromStrategy, volumeFromStrategy);
+			CostStrategy strategy = findStarategyFromName(strategyName, weight, volume);
 			factory.put(new Pair(weightFromStrategy, volumeFromStrategy), strategy);
-			
 		}
 		
 	}
 	
 	
+	public CostStrategyConditionFactory() {
+	}
+
+
 	public CostStrategy getStrategy(double weight, double volume) {
 		for(Pair key: factory.keySet()) {
 			if(weight > key.getWeight()) 

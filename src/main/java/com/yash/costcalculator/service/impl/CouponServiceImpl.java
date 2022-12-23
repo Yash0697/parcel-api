@@ -27,6 +27,7 @@ public class CouponServiceImpl implements CouponService {
 
 	@Value("${API_URL}")
 	private String apiUrl;
+	
 
 	@Override
 	public VoucherItem getDiscount(String voucherCode) {
