@@ -28,6 +28,10 @@ public class ParcelCostController {
 	@Autowired
 	ValidationService validationService;
 
+	/*
+	 * Post API to calculate cost of a parcel based on its dimensions
+	 * and weight.
+	*/
 	@PostMapping(ApiEndPoints.CALCULATE_COST)
 	public ApiResponse calculateParcelCost(@RequestBody Parcel parcel) throws InsufficientValuesProvidedException {
 		logger.info("api {} is called", ApiEndPoints.CALCULATE_COST);

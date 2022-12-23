@@ -29,11 +29,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 
-//@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 
+	/*
+	 * Exception Handler to handle InsufficientValuesProvidedException 
+	 * by sending appropriate information about failures.
+	*/
 	@ExceptionHandler(InsufficientValuesProvidedException.class)
 	public ResponseEntity<ApiResponse> handleInsufficientValuesProvidedException(InsufficientValuesProvidedException ex, WebRequest request) {
 		logger.error("insufficient values provided in the request");
@@ -57,6 +61,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(apiRes, HttpStatus.BAD_REQUEST);
 	}
 	
+	/*
+	 * private helper method to handle validation by finding what is missing from the request
+	 * BindingResult instance contains all the fields for which validation failed
+	 * 
+	*/
 	private ResponseEntity<Object> handleValidation(InsufficientValuesProvidedException ex, BindingResult result,
 			WebRequest request) {
 		List<FieldError> fieldErrors = result.getFieldErrors();
@@ -77,7 +86,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		return handleExceptionInternal(ex, errorPayload, new HttpHeaders(), HttpStatus.BAD_GATEWAY, request);
 	}
-
+	
+	/*
+	 * Helper method to process Field errors generated during validation,
+	 * adds these errors with their messages to the ValidationError instance
+	*/
 	private ValidationError processFieldErrors(List<FieldError> fieldErrors) {
 		ValidationError validationError = ValidationError.getInstance();
 		for(FieldError fieldError: fieldErrors) {

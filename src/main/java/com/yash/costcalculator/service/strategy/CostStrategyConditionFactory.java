@@ -13,8 +13,11 @@ import lombok.Setter;
 @Setter
 public class CostStrategyConditionFactory {
 	
-	
-	
+	/*
+	 * Factory class which loads all the configs from in memory h2 database,
+	 * creates appropriate strategies. Here LinkedHashMap is used to store strategies
+	 * because we need have the precedence in strategies.
+	*/
 	private LinkedHashMap<Pair, CostStrategy> factory = new LinkedHashMap<>();
 	private List<StrategyDecisionParams> strategies;
 	
@@ -34,7 +37,9 @@ public class CostStrategyConditionFactory {
 	public CostStrategyConditionFactory() {
 	}
 
-
+	/*
+	 * Utility method which returns the appropriate factory based on volume and weight
+	*/
 	public CostStrategy getStrategy(double weight, double volume) {
 		for(Pair key: factory.keySet()) {
 			if(weight > key.getWeight()) 

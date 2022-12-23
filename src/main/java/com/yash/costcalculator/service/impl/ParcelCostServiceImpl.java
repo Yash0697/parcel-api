@@ -3,6 +3,7 @@ package com.yash.costcalculator.service.impl;
 import static com.yash.costcalculator.util.AppConstants.COUPON_API_FAILED;
 import static com.yash.costcalculator.util.AppConstants.INVALID_COUPON;
 import static com.yash.costcalculator.util.AppConstants.PARCEL_COST;
+import static com.yash.costcalculator.util.AppConstants.PARCEL_REJECTED;
 import static com.yash.costcalculator.util.AppConstants.COUPON_EXPIRED;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import com.yash.costcalculator.service.CouponService;
 import com.yash.costcalculator.service.ParcelCostService;
 import com.yash.costcalculator.service.strategy.CostStrategy;
 import com.yash.costcalculator.service.strategy.CostStrategyConditionFactory;
+import com.yash.costcalculator.util.PropertyLoaderImpl;
 
 @Service
 public class ParcelCostServiceImpl implements ParcelCostService {
@@ -52,6 +54,9 @@ public class ParcelCostServiceImpl implements ParcelCostService {
 		Double volume = height * width * length;
 		Date currDate = new Date();
 		Iterable<StrategyDecisionParams> strategiesIterable = strategyRepo.findAll();
+		ApiResponse apiRes = new ApiResponse();
+		PropertyLoaderImpl propertyLoader = new PropertyLoaderImpl();
+		String couponApiActive = propertyLoader.loadProperty();
 
 		List<StrategyDecisionParams> strategies = new ArrayList<>();
 		strategiesIterable.forEach(strategies::add);
@@ -61,11 +66,13 @@ public class ParcelCostServiceImpl implements ParcelCostService {
 
 		calculatedCost = costStrategy.calculateCost();
 
+		if (calculatedCost == 0.0)
+			apiRes.setMessage(PARCEL_REJECTED);
+
 		voucherCode = parcel.getVoucherCode();
 
 		voucherItem = couponService.getDiscount(voucherCode);
 
-		ApiResponse apiRes = new ApiResponse();
 		apiRes.setError(false);
 		apiRes.setResponseDate(currDate);
 		apiRes.setStatusCode(HttpStatus.OK.value());
@@ -82,7 +89,11 @@ public class ParcelCostServiceImpl implements ParcelCostService {
 			return apiRes;
 		}
 
-		else if (voucherItem != null && voucherItem.getDiscount() > 0 && voucherItem.getExpiry().before(currDate)) {
+		else if (voucherItem != null && voucherItem.getDiscount() > 0 
+				&& voucherItem.getExpiry().before(currDate)
+				&& couponApiActive != null
+				&& couponApiActive.equalsIgnoreCase("true")
+				) {
 			apiRes.setMessage(COUPON_EXPIRED);
 			return apiRes;
 		}

@@ -9,4 +9,6 @@ public class AppConstants {
 	public static final String COUPON_EXPIRED = "Coupon that you entered could not be applied because it is expired";
 	public static final String INVALID_COUPON = "Coupon that you entered could not be applied because it is not a valid coupon";
 	public static final String COUPON_API_FAILED = "Voucher Service Failed";
+	public static final String PARCEL_REJECTED = "Parcel rejected because its too heavy";
+	public static final String IS_COUPON_API_ACTIVE = "COUPON_API";
 }

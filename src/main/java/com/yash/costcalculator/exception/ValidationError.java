@@ -13,8 +13,8 @@ import lombok.Getter;
 @Getter
 public class ValidationError {
  
-	List<String> mandatoryFields = new ArrayList<>();
-	Map<String, Set<String>> errors = new HashMap<>();
+	private List<String> mandatoryFields = new ArrayList<>();
+	private Map<String, Set<String>> errors = new HashMap<>();
 	
 	private static ValidationError INSTANCE = null;
 	  	
