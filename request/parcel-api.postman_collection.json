@@ -1,0 +1,242 @@
+{
+	"info": {
+		"_postman_id": "36168327-a03a-4ae0-be62-159cfde13660",
+		"name": "parcel-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19060390"
+	},
+	"item": [
+		{
+			"name": "Small Parcel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"weight\": 5.0,\r\n    \"height\": 10.0,\r\n    \"width\": 10.0,\r\n    \"length\": 10.0,\r\n    \"voucherCode\": \"GFI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/parcel/calculate-cost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"parcel",
+						"calculate-cost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Medium Parcel With Discount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"weight\": 5.0,\r\n    \"height\": 10.0,\r\n    \"width\": 10.0,\r\n    \"length\": 20.0,\r\n    \"voucherCode\": \"GFI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/parcel/calculate-cost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"parcel",
+						"calculate-cost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Medium Parcel With Coupon Invalid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"weight\": 5.0,\r\n    \"height\": 10.0,\r\n    \"width\": 10.0,\r\n    \"length\": 20.0,\r\n    \"voucherCode\": \"XYZ\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/parcel/calculate-cost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"parcel",
+						"calculate-cost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Large Parcel Corner Case",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"weight\": 5.0,\r\n    \"height\": 5.0,\r\n    \"width\": 50.0,\r\n    \"length\": 10.0,\r\n    \"voucherCode\": \"GFI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/parcel/calculate-cost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"parcel",
+						"calculate-cost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Heavy Parcel Corner Case",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"weight\": 10.0,\r\n    \"height\": 5.0,\r\n    \"width\": 50.0,\r\n    \"length\": 10.0,\r\n    \"voucherCode\": \"GFI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/parcel/calculate-cost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"parcel",
+						"calculate-cost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Heavy Parcel With Discount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"weight\": 11.0,\r\n    \"height\": 5.0,\r\n    \"width\": 50.0,\r\n    \"length\": 10.0,\r\n    \"voucherCode\": \"GFI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/parcel/calculate-cost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"parcel",
+						"calculate-cost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reject Parcel Corner Case",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"weight\": 50.0,\r\n    \"height\": 5.0,\r\n    \"width\": 50.0,\r\n    \"length\": 10.0,\r\n    \"voucherCode\": \"GFI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/parcel/calculate-cost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"parcel",
+						"calculate-cost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reject Parcel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"weight\": 55.0,\r\n    \"height\": 5.0,\r\n    \"width\": 50.0,\r\n    \"length\": 10.0,\r\n    \"voucherCode\": \"GFI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/parcel/calculate-cost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"parcel",
+						"calculate-cost"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
