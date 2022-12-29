@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -44,7 +45,7 @@ public class CouponServiceImpl implements CouponService {
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			logger.error("HttpClientErrorException occurred while calling coupon api");
 			return null;
-		} catch (WebClientResponseException e) {
+		} catch (WebClientResponseException | WebClientRequestException e) {
 			logger.error("WebClientResponseException occurred while calling coupon api. Will return 0.0f as discount percentage");
 			voucherItem = new VoucherItem();
 			voucherItem.setDiscount(0.0f);

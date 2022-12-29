@@ -32,6 +32,7 @@ import com.yash.costcalculator.model.VoucherItem;
 import com.yash.costcalculator.repository.StrategyDecisionParamsRepository;
 import com.yash.costcalculator.service.impl.ParcelCostServiceImpl;
 import com.yash.costcalculator.service.strategy.CostStrategyConditionFactory;
+import com.yash.costcalculator.util.PropertyLoaderImpl;
 
 public class ParcelCostServiceImplTest {
 
@@ -46,6 +47,9 @@ public class ParcelCostServiceImplTest {
 
 	@Mock
 	private Iterable<StrategyDecisionParams> strategies;
+	
+	@Mock
+	PropertyLoaderImpl propertyLoader; 
 
 	private Parcel parcel;
 	
@@ -99,6 +103,7 @@ public class ParcelCostServiceImplTest {
 		when(strategyRepo.findAll()).thenReturn(strategies);
 		when(couponService.getDiscount(Mockito.anyString()))
 		.thenReturn(voucherResponse);
+		when(propertyLoader.loadProperty()).thenReturn("true");
 		ApiResponse calculatedCost = parcelCostService.calculateCost(parcel);
 		assertTrue(COUPON_EXPIRED.equals(calculatedCost.getMessage()));
 	}

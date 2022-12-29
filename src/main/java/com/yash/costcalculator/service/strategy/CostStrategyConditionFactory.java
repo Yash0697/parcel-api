@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.yash.costcalculator.model.StrategyDecisionParams;
+import com.yash.costcalculator.service.strategy.impl.LargeParcelStrategy;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +28,7 @@ public class CostStrategyConditionFactory {
 	private List<StrategyDecisionParams> strategies;
 
 
-	private static final String PACKAGE = "com.yash.costcalculator.service.strategy.";
+	private static final String PACKAGE = "com.yash.costcalculator.service.strategy.impl.";
 
 	public CostStrategyConditionFactory(List<StrategyDecisionParams> strategies, double weight, double volume) {
 		this.strategies = strategies;
@@ -84,17 +85,4 @@ public class CostStrategyConditionFactory {
 		return newInstance;
 	}
 
-//	private CostStrategy findStarategyFromName(String strategyName, double weight, double volume) {
-//		switch(strategyName) {
-//			case "RejectParcelStrategy": 
-//				return new RejectParcelStrategy();
-//			case "HeavyParcelStrategy": 
-//				return new HeavyParcelStrategy(weight);
-//			case "SmallParcelStrategy":
-//				return new SmallParcelStrategy(volume);
-//			case "MediumParcelStrategy":
-//				return new MediumParcelStrategy(volume);
-//			default: return new LargeParcelStrategy(volume);
-//		}
-//	}
 }

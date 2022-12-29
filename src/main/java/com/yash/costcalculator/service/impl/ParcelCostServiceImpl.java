@@ -1,11 +1,11 @@
 package com.yash.costcalculator.service.impl;
 
-import static com.yash.costcalculator.util.AppConstants.COUPON_NOT_APPLIED;
 import static com.yash.costcalculator.util.AppConstants.COUPON_API_FAILED;
+import static com.yash.costcalculator.util.AppConstants.COUPON_EXPIRED;
+import static com.yash.costcalculator.util.AppConstants.COUPON_NOT_APPLIED;
 import static com.yash.costcalculator.util.AppConstants.INVALID_COUPON;
 import static com.yash.costcalculator.util.AppConstants.PARCEL_COST;
 import static com.yash.costcalculator.util.AppConstants.PARCEL_REJECTED;
-import static com.yash.costcalculator.util.AppConstants.COUPON_EXPIRED;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +43,9 @@ public class ParcelCostServiceImpl implements ParcelCostService {
 
 	@Autowired
 	CouponService couponService;
+	
+	@Autowired
+	PropertyLoaderImpl propertyLoader;
 
 	@Override
 	public ApiResponse calculateCost(Parcel parcel) {
@@ -60,7 +63,7 @@ public class ParcelCostServiceImpl implements ParcelCostService {
 		Date currDate = new Date();
 		Iterable<StrategyDecisionParams> strategiesIterable = strategyRepo.findAll();
 		ApiResponse apiRes = new ApiResponse();
-		PropertyLoaderImpl propertyLoader = new PropertyLoaderImpl();
+		
 		String couponApiActive = propertyLoader.loadProperty();
 
 		conditionFactory = loadCostStrategies(weight, volume, strategiesIterable);
@@ -105,6 +108,11 @@ public class ParcelCostServiceImpl implements ParcelCostService {
 
 		else if (voucherItem != null && voucherItem.getDiscount() > 0 
 				&& voucherItem.getExpiry().before(currDate)
+				/* Since Coupon Api is old, 
+				 * none of the coupons are active anymore.
+				 * Uncomment following lines to make Coupon Api
+				 *  follow the expiry date take effect
+				 */
 				&& couponApiActive != null
 				&& couponApiActive.equalsIgnoreCase("true")
 				) {
