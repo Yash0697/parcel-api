@@ -2,7 +2,11 @@ package com.yash.costcalculator.service.strategy;
 
 public class RejectParcelStrategy implements CostStrategy {
 
-	RejectParcelStrategy() {
+	@SuppressWarnings("unused")
+	private double weight, volume;
+	RejectParcelStrategy(double weight, double volume) {
+		this.weight = weight;
+		this.volume = volume;
 	}
 	
 	@Override

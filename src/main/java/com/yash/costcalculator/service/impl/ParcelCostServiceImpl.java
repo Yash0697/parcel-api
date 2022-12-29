@@ -1,5 +1,6 @@
 package com.yash.costcalculator.service.impl;
 
+import static com.yash.costcalculator.util.AppConstants.COUPON_NOT_APPLIED;
 import static com.yash.costcalculator.util.AppConstants.COUPON_API_FAILED;
 import static com.yash.costcalculator.util.AppConstants.INVALID_COUPON;
 import static com.yash.costcalculator.util.AppConstants.PARCEL_COST;
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,9 @@ import com.yash.costcalculator.util.PropertyLoaderImpl;
 
 @Service
 public class ParcelCostServiceImpl implements ParcelCostService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ParcelCostServiceImpl.class);
+	
 
 	private CostStrategyConditionFactory conditionFactory;
 
@@ -43,7 +49,6 @@ public class ParcelCostServiceImpl implements ParcelCostService {
 		VoucherItem voucherItem = null;
 		Double calculatedCost = null;
 		String voucherCode = null;
-		Double discountedCost = null;
 
 		Map<String, Object> payload = new HashMap<>();
 
@@ -58,26 +63,35 @@ public class ParcelCostServiceImpl implements ParcelCostService {
 		PropertyLoaderImpl propertyLoader = new PropertyLoaderImpl();
 		String couponApiActive = propertyLoader.loadProperty();
 
-		List<StrategyDecisionParams> strategies = new ArrayList<>();
-		strategiesIterable.forEach(strategies::add);
-		conditionFactory = new CostStrategyConditionFactory(strategies, weight, volume);
+		conditionFactory = loadCostStrategies(weight, volume, strategiesIterable);
 
 		CostStrategy costStrategy = conditionFactory.getStrategy(weight, volume);
 
+		logger.info("cost strategy retrieved for given parcel {}", costStrategy.getClass().getName());
+		
 		calculatedCost = costStrategy.calculateCost();
 
 		if (calculatedCost == 0.0)
 			apiRes.setMessage(PARCEL_REJECTED);
 
-		voucherCode = parcel.getVoucherCode();
-
-		voucherItem = couponService.getDiscount(voucherCode);
-
+		voucherCode = checkVoucherCode(parcel);
+		
 		apiRes.setError(false);
 		apiRes.setResponseDate(currDate);
 		apiRes.setStatusCode(HttpStatus.OK.value());
+		if(voucherCode == null) {
+			logger.info(COUPON_NOT_APPLIED);
+			payload.put(PARCEL_COST, calculatedCost);
+			apiRes.setMessage(COUPON_NOT_APPLIED);
+			apiRes.setPayload(payload);
+			return apiRes;
+		}
+
+		voucherItem = couponService.getDiscount(voucherCode);
+
 
 		if (voucherItem == null) {
+			logger.error(COUPON_API_FAILED);
 			apiRes.setError(true);
 			apiRes.setStatusCode(HttpStatus.BAD_REQUEST.value());
 			apiRes.setMessage(COUPON_API_FAILED);
@@ -98,11 +112,26 @@ public class ParcelCostServiceImpl implements ParcelCostService {
 			return apiRes;
 		}
 
-		discountedCost = calculatedCost - calculatedCost * (double) voucherItem.getDiscount() / 100;
-		Double discounted = Double.valueOf(discountedCost);
+		Double discounted = calculateDiscountedPrice(calculatedCost, voucherItem);
 		payload.put(PARCEL_COST, discounted);
 		apiRes.setPayload(payload);
 		return apiRes;
+	}
+
+	private String checkVoucherCode(Parcel parcel) {
+		String voucherCode;
+		voucherCode = parcel.getVoucherCode();
+		return voucherCode;
+	}
+
+	private CostStrategyConditionFactory loadCostStrategies(Double weight, Double volume, Iterable<StrategyDecisionParams> strategiesIterable) {
+		List<StrategyDecisionParams> strategies = new ArrayList<>();
+		strategiesIterable.forEach(strategies::add);
+		return new CostStrategyConditionFactory(strategies, weight, volume);
+	}
+	
+	private Double calculateDiscountedPrice(double calculatedCost, VoucherItem voucherItem) {
+		return calculatedCost - calculatedCost * (double) voucherItem.getDiscount() / 100;
 	}
 
 }

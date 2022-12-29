@@ -2,10 +2,12 @@ package com.yash.costcalculator.service.strategy;
 
 public class SmallParcelStrategy implements CostStrategy {
 
-	private double volume;
+	@SuppressWarnings("unused")
+	private double volume, weight;
 
-	SmallParcelStrategy(double volume) {
+	SmallParcelStrategy(double weight, double volume) {
 		this.volume = volume;
+		this.weight = weight;
 	}
 
 	@Override

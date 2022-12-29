@@ -42,8 +42,10 @@ public class CouponServiceImpl implements CouponService {
 			voucherItem = webCLientBuilder.build().get().uri(uri).retrieve().bodyToMono(VoucherItem.class).block();
 			return voucherItem;
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			logger.error("HttpClientErrorException occurred while calling coupon api");
 			return null;
 		} catch (WebClientResponseException e) {
+			logger.error("WebClientResponseException occurred while calling coupon api. Will return 0.0f as discount percentage");
 			voucherItem = new VoucherItem();
 			voucherItem.setDiscount(0.0f);
 			return voucherItem;

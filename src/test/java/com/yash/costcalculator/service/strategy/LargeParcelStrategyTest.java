@@ -14,7 +14,7 @@ public class LargeParcelStrategyTest {
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		largeParcelStrategy = new LargeParcelStrategy(2600);
+		largeParcelStrategy = new LargeParcelStrategy(9, 2600);
 	}
 
 	@Test

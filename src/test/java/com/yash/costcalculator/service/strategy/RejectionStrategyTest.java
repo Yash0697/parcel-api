@@ -14,7 +14,7 @@ public class RejectionStrategyTest {
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		rejectParcelStrategy = new RejectParcelStrategy();
+		rejectParcelStrategy = new RejectParcelStrategy(51, 1200);
 	}
 
 	@Test

@@ -14,7 +14,7 @@ public class MediumParcelStrategyTest {
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		mediumParcelStrategy = new MediumParcelStrategy(2000);
+		mediumParcelStrategy = new MediumParcelStrategy(9, 2000);
 	}
 
 	@Test
