@@ -1,7 +1,6 @@
 package com.yash.costcalculator.service;
 
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,7 @@ public class ValidationServiceImplTest {
 	@Mock
 	BindingResult result;
 	
+	@SuppressWarnings("deprecation")
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);

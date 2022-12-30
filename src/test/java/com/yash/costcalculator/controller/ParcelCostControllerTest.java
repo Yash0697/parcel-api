@@ -14,7 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 
+import com.yash.costcalculator.exception.InsufficientValuesProvidedException;
 import com.yash.costcalculator.model.ApiResponse;
 import com.yash.costcalculator.model.Parcel;
 import com.yash.costcalculator.service.ParcelCostService;
@@ -34,6 +36,9 @@ public class ParcelCostControllerTest {
 	Parcel parcel;
 
 	ApiResponse apiRes;
+	
+	@Mock
+	BindingResult bindingResult;
 
 	@SuppressWarnings("deprecation")
 	@BeforeEach

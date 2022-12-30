@@ -1,25 +1,24 @@
-package com.yash.costcalculator.config;
+package com.yash.costcalculator.util;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
-@SuppressWarnings("deprecation")
-public class AppConfigTest {
+public class AppConstantsTest {
 
-	
-	
 	@InjectMocks
-	AppConfig appConfig;
-	
+	AppConstants appConstants;
+
+	@SuppressWarnings("deprecation")
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 	}
 	
 	@Test
-	public void testGetWebClientBuilder() {
-		appConfig.getWebClientBuilder();
+	public void testAppConstants() {
+		@SuppressWarnings("unused")
+		AppConstants appconstants = new AppConstants();
 	}
 }

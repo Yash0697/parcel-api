@@ -6,9 +6,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import static com.yash.costcalculator.util.AppConstants.PARCEL_REJECTED;
 import static com.yash.costcalculator.util.AppConstants.PARCEL_COST;
 import static com.yash.costcalculator.util.AppConstants.COUPON_EXPIRED;
 import static com.yash.costcalculator.util.AppConstants.INVALID_COUPON;
+import static com.yash.costcalculator.util.AppConstants.COUPON_API_FAILED;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -31,6 +33,7 @@ import com.yash.costcalculator.model.StrategyDecisionParams;
 import com.yash.costcalculator.model.VoucherItem;
 import com.yash.costcalculator.repository.StrategyDecisionParamsRepository;
 import com.yash.costcalculator.service.impl.ParcelCostServiceImpl;
+import com.yash.costcalculator.service.strategy.CostStrategy;
 import com.yash.costcalculator.service.strategy.CostStrategyConditionFactory;
 import com.yash.costcalculator.util.PropertyLoaderImpl;
 
@@ -50,6 +53,9 @@ public class ParcelCostServiceImplTest {
 	
 	@Mock
 	PropertyLoaderImpl propertyLoader; 
+	
+	@Mock
+	CostStrategy costStrategy;
 
 	private Parcel parcel;
 	
@@ -116,5 +122,12 @@ public class ParcelCostServiceImplTest {
 		.thenReturn(voucherResponse);
 		ApiResponse calculatedCost = parcelCostService.calculateCost(parcel);
 		assertTrue(INVALID_COUPON.equals(calculatedCost.getMessage()));
+	}
+	
+	@Test
+	public void testCalculateCost_Rejected() {
+		parcel.setWeight(54.0);
+		ApiResponse calculatedCost = parcelCostService.calculateCost(parcel);
+		assertTrue(COUPON_API_FAILED.equals(calculatedCost.getMessage()));
 	}
 }

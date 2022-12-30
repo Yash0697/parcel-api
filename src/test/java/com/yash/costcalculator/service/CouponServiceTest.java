@@ -17,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.yash.costcalculator.model.VoucherItem;
 import com.yash.costcalculator.service.impl.CouponServiceImpl;
@@ -83,6 +84,7 @@ public class CouponServiceTest {
 		        .thenReturn(voucherItem);
 		        when(voucherItem.block()).
 		        thenReturn(voucherResponse).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST))
+		        .thenThrow(new WebClientResponseException(401, "", null, null, null))
 		        ;
 				
 		
@@ -91,6 +93,7 @@ public class CouponServiceTest {
 		
 		voucher = couponService.getDiscount("XYZ");
 		assertNull(voucher);
+		voucher = couponService.getDiscount("XYZ");
 		
 		
 	}
