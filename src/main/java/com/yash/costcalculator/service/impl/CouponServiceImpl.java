@@ -38,7 +38,7 @@ public class CouponServiceImpl implements CouponService {
 		VoucherItem voucherItem = null;
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiUrl);
 		URI uri = builder.buildAndExpand(serviceVariables).toUri();
-		logger.debug("complete url of coupon service {}", uri);
+		logger.info("complete url of coupon service {}", uri);
 		try {
 			voucherItem = webCLientBuilder.build().get().uri(uri).retrieve().bodyToMono(VoucherItem.class).block();
 			return voucherItem;
